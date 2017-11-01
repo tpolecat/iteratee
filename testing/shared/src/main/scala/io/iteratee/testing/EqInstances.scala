@@ -9,8 +9,8 @@ import scala.Predef._
 trait EqInstances {
   implicit def eqThrowable: Eq[Throwable] = Eq.fromUniversalEquals
 
-  implicit def eqEnumerator[F[_]: Monad, A: Eq](implicit eq: Eq[F[Vector[A]]]): Eq[Enumerator[F, A]] =
-    eq.on[Enumerator[F, A]](_.toVector)
+  implicit def eqEnumerator[F[_]: Monad, A: Eq](implicit eqFVA: Eq[F[Vector[A]]]): Eq[Enumerator[F, A]] =
+    Eq.by[Enumerator[F, A], F[Vector[A]]](_.toVector)(eqFVA)
 
   implicit def eqIteratee[F[_]: Monad, A: Eq: Arbitrary, B: Eq: Arbitrary](implicit
     eqFB: Eq[F[B]]
